@@ -1,0 +1,842 @@
+#include "fsl_device_registers.h"
+#include <stdint.h>
+void main(void) {
+	SIM_SCGC5 |= SIM_SCGC5_PORTB_MASK; /* Enable Port B Clock Gate Control*/
+	SIM_SCGC5 |= SIM_SCGC5_PORTC_MASK; /* Enable Port C Clock Gate Control*/
+	PORTB_GPCLR = 0x0E0C0100; /* Configures Pins 2-3 and 9-11 on Port B to be GPIO */
+	PORTB_GPCHR = 0x001C0100; /* Configures Pins 18-20 on Port B to be GPIO */
+	PORTC_GPCLR = 0x01BF0100; /* Configures Pins 0-5 and 7-8 on Port C to be GPIO */
+	PORTC_GPCHR = 0x00030100; /* Configures Pins 16-17 on Port C to be GPIO */
+	GPIOB_PDDR = 0x001C0E0C; /* Configures Pins 2-3 and 9-11 and 18-20 of Port B as Output */
+	GPIOC_PDDR = 0x000001BF; /* Configures Pins 0-5 and 7-8 on Port C to be Output and Pins 16-17 on Port C to be Input */
+
+	uint32_t outval = 0, outval2 = 0, inval = 0, inval2 = 0;
+	int ROT_DIR = 0, CNT_DIR = -1;
+	unsigned int i;
+	while (1) {
+		for (i = 0; i < 1000000; i++); // S/W Delay (~1 sec)
+		outval = 0;
+		outval2 = 0;
+		inval = GPIOC_PDIR & 0x10000; /* Captures and stores bit 16 on Port C*/
+		inval2 = GPIOC_PDIR & 0x20000; /* Captures and stores bit 17 on Port C*/
+		if(inval == 0x00000) {CNT_DIR--;} //bit 16 on Port C switch down
+		if(inval == 0x10000) {CNT_DIR++;} //bit 16 on Port C switch up
+		if(inval2 == 0x00000) {ROT_DIR--;} //bit 17 on Port C switch down
+		if(inval2 == 0x20000) {ROT_DIR++;} //bit 17 on Port C switch up
+
+		if(CNT_DIR < 0) {CNT_DIR = 0;}
+		if(CNT_DIR > 255) {CNT_DIR = 255;}
+
+		if(ROT_DIR < 1) {ROT_DIR = 1;}
+		if(ROT_DIR > 8) {ROT_DIR = 8;}
+
+		switch(CNT_DIR)
+		{
+		case 0:
+			outval = 0x000;
+			break;
+		case 1:
+			outval = 0x001;
+			break;
+		case 2:
+			outval = 0x002;
+			break;
+		case 3:
+			outval = 0x003;
+			break;
+		case 4:
+			outval = 0x004;
+			break;
+		case 5:
+			outval = 0x005;
+			break;
+		case 6:
+			outval = 0x006;
+			break;
+		case 7:
+			outval = 0x007;
+			break;
+		case 8:
+			outval = 0x008;
+			break;
+		case 9:
+			outval = 0x009;
+			break;
+		case 10:
+			outval = 0x00A;
+			break;
+		case 11:
+			outval = 0x00B;
+			break;
+		case 12:
+			outval = 0x00C;
+			break;
+		case 13:
+			outval = 0x00D;
+			break;
+		case 14:
+			outval = 0x00E;
+			break;
+		case 15:
+			outval = 0x00F;
+			break;
+		case 16:
+			outval = 0x010;
+			break;
+		case 17:
+			outval = 0x011;
+			break;
+		case 18:
+			outval = 0x012;
+			break;
+		case 19:
+			outval = 0x013;
+			break;
+		case 20:
+			outval = 0x014;
+			break;
+		case 21:
+			outval = 0x015;
+			break;
+		case 22:
+			outval = 0x016;
+			break;
+		case 23:
+			outval = 0x017;
+			break;
+		case 24:
+			outval = 0x018;
+			break;
+		case 25:
+			outval = 0x019;
+			break;
+		case 26:
+			outval = 0x01A;
+			break;
+		case 27:
+			outval = 0x01B;
+			break;
+		case 28:
+			outval = 0x01C;
+			break;
+		case 29:
+			outval = 0x01D;
+			break;
+		case 30:
+			outval = 0x01E;
+			break;
+		case 31:
+			outval = 0x01F;
+			break;
+		case 32:
+			outval = 0x020;
+			break;
+		case 33:
+			outval = 0x021;
+			break;
+		case 34:
+			outval = 0x022;
+			break;
+		case 35:
+			outval = 0x023;
+			break;
+		case 36:
+			outval = 0x024;
+			break;
+		case 37:
+			outval = 0x025;
+			break;
+		case 38:
+			outval = 0x026;
+			break;
+		case 39:
+			outval = 0x027;
+			break;
+		case 40:
+			outval = 0x028;
+			break;
+		case 41:
+			outval = 0x029;
+			break;
+		case 42:
+			outval = 0x02A;
+			break;
+		case 43:
+			outval = 0x02B;
+			break;
+		case 44:
+			outval = 0x02C;
+			break;
+		case 45:
+			outval = 0x02D;
+			break;
+		case 46:
+			outval = 0x02E;
+			break;
+		case 47:
+			outval = 0x02F;
+			break;
+		case 48:
+			outval = 0x030;
+			break;
+		case 49:
+			outval = 0x031;
+			break;
+		case 50:
+			outval = 0x032;
+			break;
+		case 51:
+			outval = 0x033;
+			break;
+		case 52:
+			outval = 0x034;
+			break;
+		case 53:
+			outval = 0x035;
+			break;
+		case 54:
+			outval = 0x036;
+			break;
+		case 55:
+			outval = 0x037;
+			break;
+		case 56:
+			outval = 0x038;
+			break;
+		case 57:
+			outval = 0x039;
+			break;
+		case 58:
+			outval = 0x03A;
+			break;
+		case 59:
+			outval = 0x03B;
+			break;
+		case 60:
+			outval = 0x03C;
+			break;
+		case 61:
+			outval = 0x03D;
+			break;
+		case 62:
+			outval = 0x03E;
+			break;
+		case 63:
+			outval = 0x03F;
+			break;
+		case 64:
+			outval = 0x080;
+			break;
+		case 65:
+			outval = 0x081;
+			break;
+		case 66:
+			outval = 0x082;
+			break;
+		case 67:
+			outval = 0x083;
+			break;
+		case 68:
+			outval = 0x084;
+			break;
+		case 69:
+			outval = 0x085;
+			break;
+		case 70:
+			outval = 0x086;
+			break;
+		case 71:
+			outval = 0x087;
+			break;
+		case 72:
+			outval = 0x088;
+			break;
+		case 73:
+			outval = 0x089;
+			break;
+		case 74:
+			outval = 0x08A;
+			break;
+		case 75:
+			outval = 0x08B;
+			break;
+		case 76:
+			outval = 0x08C;
+			break;
+		case 77:
+			outval = 0x08D;
+			break;
+		case 78:
+			outval = 0x08E;
+			break;
+		case 79:
+			outval = 0x08F;
+			break;
+		case 80:
+			outval = 0x090;
+			break;
+		case 81:
+			outval = 0x091;
+			break;
+		case 82:
+			outval = 0x092;
+			break;
+		case 83:
+			outval = 0x093;
+			break;
+		case 84:
+			outval = 0x094;
+			break;
+		case 85:
+			outval = 0x095;
+			break;
+		case 86:
+			outval = 0x096;
+			break;
+		case 87:
+			outval = 0x097;
+			break;
+		case 88:
+			outval = 0x098;
+			break;
+		case 89:
+			outval = 0x099;
+			break;
+		case 90:
+			outval = 0x09A;
+			break;
+		case 91:
+			outval = 0x09B;
+			break;
+		case 92:
+			outval = 0x09C;
+			break;
+		case 93:
+			outval = 0x09D;
+			break;
+		case 94:
+			outval = 0x09E;
+			break;
+		case 95:
+			outval = 0x09F;
+			break;
+		case 96:
+			outval = 0x0A0;
+			break;
+		case 97:
+			outval = 0x0A1;
+			break;
+		case 98:
+			outval = 0x0A2;
+			break;
+		case 99:
+			outval = 0x0A3;
+			break;
+		case 100:
+			outval = 0x0A4;
+			break;
+		case 101:
+			outval = 0x0A5;
+			break;
+		case 102:
+			outval = 0x0A6;
+			break;
+		case 103:
+			outval = 0x0A7;
+			break;
+		case 104:
+			outval = 0x0A8;
+			break;
+		case 105:
+			outval = 0x0A9;
+			break;
+		case 106:
+			outval = 0x0AA;
+			break;
+		case 107:
+			outval = 0x0AB;
+			break;
+		case 108:
+			outval = 0x0AC;
+			break;
+		case 109:
+			outval = 0x0AD;
+			break;
+		case 110:
+			outval = 0x0AE;
+			break;
+		case 111:
+			outval = 0x0AF;
+			break;
+		case 112:
+			outval = 0x0B0;
+			break;
+		case 113:
+			outval = 0x0B1;
+			break;
+		case 114:
+			outval = 0x0B2;
+			break;
+		case 115:
+			outval = 0x0B3;
+			break;
+		case 116:
+			outval = 0x0B4;
+			break;
+		case 117:
+			outval = 0x0B5;
+			break;
+		case 118:
+			outval = 0x0B6;
+			break;
+		case 119:
+			outval = 0x0B7;
+			break;
+		case 120:
+			outval = 0x0B8;
+			break;
+		case 121:
+			outval = 0x0B9;
+			break;
+		case 122:
+			outval = 0x0BA;
+			break;
+		case 123:
+			outval = 0x0BB;
+			break;
+		case 124:
+			outval = 0x0BC;
+			break;
+		case 125:
+			outval = 0x0BD;
+			break;
+		case 126:
+			outval = 0x0BE;
+			break;
+		case 127:
+			outval = 0x0BF;
+			break;
+		case 128:
+			outval = 0x100;
+			break;
+		case 129:
+			outval = 0x101;
+			break;
+		case 130:
+			outval = 0x102;
+			break;
+		case 131:
+			outval = 0x103;
+			break;
+		case 132:
+			outval = 0x104;
+			break;
+		case 133:
+			outval = 0x105;
+			break;
+		case 134:
+			outval = 0x106;
+			break;
+		case 135:
+			outval = 0x107;
+			break;
+		case 136:
+			outval = 0x108;
+			break;
+		case 137:
+			outval = 0x109;
+			break;
+		case 138:
+			outval = 0x10A;
+			break;
+		case 139:
+			outval = 0x10B;
+			break;
+		case 140:
+			outval = 0x10C;
+			break;
+		case 141:
+			outval = 0x10D;
+			break;
+		case 142:
+			outval = 0x10E;
+			break;
+		case 143:
+			outval = 0x10F;
+			break;
+		case 144:
+			outval = 0x110;
+			break;
+		case 145:
+			outval = 0x111;
+			break;
+		case 146:
+			outval = 0x112;
+			break;
+		case 147:
+			outval = 0x113;
+			break;
+		case 148:
+			outval = 0x114;
+			break;
+		case 149:
+			outval = 0x115;
+			break;
+		case 150:
+			outval = 0x116;
+			break;
+		case 151:
+			outval = 0x117;
+			break;
+		case 152:
+			outval = 0x118;
+			break;
+		case 153:
+			outval = 0x119;
+			break;
+		case 154:
+			outval = 0x11A;
+			break;
+		case 155:
+			outval = 0x11B;
+			break;
+		case 156:
+			outval = 0x11C;
+			break;
+		case 157:
+			outval = 0x11D;
+			break;
+		case 158:
+			outval = 0x11E;
+			break;
+		case 159:
+			outval = 0x11F;
+			break;
+		case 160:
+			outval = 0x120;
+			break;
+		case 161:
+			outval = 0x121;
+			break;
+		case 162:
+			outval = 0x122;
+			break;
+		case 163:
+			outval = 0x123;
+			break;
+		case 164:
+			outval = 0x124;
+			break;
+		case 165:
+			outval = 0x125;
+			break;
+		case 166:
+			outval = 0x126;
+			break;
+		case 167:
+			outval = 0x127;
+			break;
+		case 168:
+			outval = 0x128;
+			break;
+		case 169:
+			outval = 0x129;
+			break;
+		case 170:
+			outval = 0x12A;
+			break;
+		case 171:
+			outval = 0x12B;
+			break;
+		case 172:
+			outval = 0x12C;
+			break;
+		case 173:
+			outval = 0x12D;
+			break;
+		case 174:
+			outval = 0x12E;
+			break;
+		case 175:
+			outval = 0x12F;
+			break;
+		case 176:
+			outval = 0x130;
+			break;
+		case 177:
+			outval = 0x131;
+			break;
+		case 178:
+			outval = 0x132;
+			break;
+		case 179:
+			outval = 0x133;
+			break;
+		case 180:
+			outval = 0x134;
+			break;
+		case 181:
+			outval = 0x135;
+			break;
+		case 182:
+			outval = 0x136;
+			break;
+		case 183:
+			outval = 0x137;
+			break;
+		case 184:
+			outval = 0x138;
+			break;
+		case 185:
+			outval = 0x139;
+			break;
+		case 186:
+			outval = 0x13A;
+			break;
+		case 187:
+			outval = 0x13B;
+			break;
+		case 188:
+			outval = 0x13C;
+			break;
+		case 189:
+			outval = 0x13D;
+			break;
+		case 190:
+			outval = 0x13E;
+			break;
+		case 191:
+			outval = 0x13F;
+			break;
+		case 192:
+			outval = 0x180;
+			break;
+		case 193:
+			outval = 0x181;
+			break;
+		case 194:
+			outval = 0x182;
+			break;
+		case 195:
+			outval = 0x183;
+			break;
+		case 196:
+			outval = 0x184;
+			break;
+		case 197:
+			outval = 0x185;
+			break;
+		case 198:
+			outval = 0x186;
+			break;
+		case 199:
+			outval = 0x187;
+			break;
+		case 200:
+			outval = 0x188;
+			break;
+		case 201:
+			outval = 0x189;
+			break;
+		case 202:
+			outval = 0x18A;
+			break;
+		case 203:
+			outval = 0x18B;
+			break;
+		case 204:
+			outval = 0x18C;
+			break;
+		case 205:
+			outval = 0x18D;
+			break;
+		case 206:
+			outval = 0x18E;
+			break;
+		case 207:
+			outval = 0x18F;
+			break;
+		case 208:
+			outval = 0x190;
+			break;
+		case 209:
+			outval = 0x191;
+			break;
+		case 210:
+			outval = 0x192;
+			break;
+		case 211:
+			outval = 0x193;
+			break;
+		case 212:
+			outval = 0x194;
+			break;
+		case 213:
+			outval = 0x195;
+			break;
+		case 214:
+			outval = 0x196;
+			break;
+		case 215:
+			outval = 0x197;
+			break;
+		case 216:
+			outval = 0x198;
+			break;
+		case 217:
+			outval = 0x199;
+			break;
+		case 218:
+			outval = 0x19A;
+			break;
+		case 219:
+			outval = 0x19B;
+			break;
+		case 220:
+			outval = 0x19C;
+			break;
+		case 221:
+			outval = 0x19D;
+			break;
+		case 222:
+			outval = 0x19E;
+			break;
+		case 223:
+			outval = 0x19F;
+			break;
+		case 224:
+			outval = 0x1A0;
+			break;
+		case 225:
+			outval = 0x1A1;
+			break;
+		case 226:
+			outval = 0x1A2;
+			break;
+		case 227:
+			outval = 0x1A3;
+			break;
+		case 228:
+			outval = 0x1A4;
+			break;
+		case 229:
+			outval = 0x1A5;
+			break;
+		case 230:
+			outval = 0x1A6;
+			break;
+		case 231:
+			outval = 0x1A7;
+			break;
+		case 232:
+			outval = 0x1A8;
+			break;
+		case 233:
+			outval = 0x1A9;
+			break;
+		case 234:
+			outval = 0x1AA;
+			break;
+		case 235:
+			outval = 0x1AB;
+			break;
+		case 236:
+			outval = 0x1AC;
+			break;
+		case 237:
+			outval = 0x1AD;
+			break;
+		case 238:
+			outval = 0x1AE;
+			break;
+		case 239:
+			outval = 0x1AF;
+			break;
+		case 240:
+			outval = 0x1B0;
+			break;
+		case 241:
+			outval = 0x1B1;
+			break;
+		case 242:
+			outval = 0x1B2;
+			break;
+		case 243:
+			outval = 0x1B3;
+			break;
+		case 244:
+			outval = 0x1B4;
+			break;
+		case 245:
+			outval = 0x1B5;
+			break;
+		case 246:
+			outval = 0x1B6;
+			break;
+		case 247:
+			outval = 0x1B7;
+			break;
+		case 248:
+			outval = 0x1B8;
+			break;
+		case 249:
+			outval = 0x1B9;
+			break;
+		case 250:
+			outval = 0x1BA;
+			break;
+		case 251:
+			outval = 0x1BB;
+			break;
+		case 252:
+			outval = 0x1BC;
+			break;
+		case 253:
+			outval = 0x1BD;
+			break;
+		case 254:
+			outval = 0x1BE;
+			break;
+		case 255:
+			outval = 0x1BF;
+			break;
+		default:
+			outval = 0x000;
+			break;
+		}
+
+		switch(ROT_DIR)
+		{
+		case 1:
+			outval2 = 0x000004;
+			break;
+		case 2:
+			outval2 = 0x000008;
+			break;
+		case 3:
+			outval2 = 0x000200;
+			break;
+		case 4:
+			outval2 = 0x000400;
+			break;
+		case 5:
+			outval2 = 0x000800;
+			break;
+		case 6:
+			outval2 = 0x040000;
+			break;
+		case 7:
+			outval2 = 0x080000;
+			break;
+		case 8:
+			outval2 = 0x100000;
+			break;
+		default:
+			outval2 = 0x000004;
+			break;
+		}
+
+		GPIOC_PDOR = outval; //CNT_DIR LED
+		GPIOB_PDOR = outval2; //ROT_DIR LED
+	}
+}

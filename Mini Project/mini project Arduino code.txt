@@ -1,0 +1,55 @@
+#include <LiquidCrystal.h>
+int rs = 2;
+int en = 3;
+int d4 = 4;
+int d5 = 5;
+int d6 = 6;
+int d7 = 7;
+LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+void setup() {
+  // put your setup code here, to run once:
+lcd.begin (16, 2);
+pinMode (8, INPUT);
+pinMode (9, INPUT);
+pinMode (10, INPUT);
+pinMode (11, INPUT);
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+
+  if (digitalRead(8) == HIGH)
+  {
+    lcd.setCursor(0,0);
+    lcd.print("Fan");
+    lcd.setCursor(0,1);
+    lcd.print("Speed: 1");
+  }
+
+  if (digitalRead(9) == HIGH)
+  {
+    lcd.setCursor(0,0);
+    lcd.print("Fan");
+    lcd.setCursor(0,1);
+    lcd.print("Speed: 2");
+  }
+
+  if (digitalRead(10) == HIGH)
+  {
+    lcd.setCursor(0,0);
+    lcd.print("Fan");
+    lcd.setCursor(0,1);
+    lcd.print("Speed: 3");
+  }
+
+if (digitalRead(11) == HIGH)
+  {
+    lcd.setCursor(0,0);
+    lcd.print("Heat");
+    lcd.setCursor(0,1);
+    lcd.print("Extractor");
+  }
+  
+else {lcd.clear();}
+
+}

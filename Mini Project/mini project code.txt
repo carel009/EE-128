@@ -1,0 +1,70 @@
+#include "fsl_device_registers.h"
+#include <stdint.h>
+void main(void) {
+	SIM_SCGC5 |= SIM_SCGC5_PORTC_MASK; // Enable Port C Clock Gate Control
+	SIM_SCGC5 |= SIM_SCGC5_PORTD_MASK; // Enable Port D Clock Gate Control
+	PORTC_GPCLR = 0x07BF0100; // Configures Pins 0-5 and 7-10 on Port C to be GPIO
+	PORTD_GPCLR = 0x000F0100; // Configures Pins 0-3 on Port D to be GPIO
+	GPIOC_PDDR = 0x0000003F; // Configures Pins 0-5 on Port C to be Output and Pins 7-10 on Port C to be Input
+	GPIOD_PDDR = 0x0000000F; // Configures Pins 0-3 on Port D to be Output
+
+	unsigned char position[8] = {0x32, 0x36, 0x34, 0x35, 0x31, 0x39, 0x38, 0x3A};
+	uint32_t outval = 0, led = 0;
+	int val = 0, enable = 0;
+	uint32_t selection = 0;
+
+	while (1)
+	{
+		//Read Port C
+		selection = GPIOC_PDIR & 0x780; // Captures and stores bit 7-10 on Port C
+
+		if((selection == 0x780) || (selection == 0x600) || (selection == 0x500) || (selection == 0x480) || (selection == 0x400) || (selection == 0x300) || (selection == 0x280) || (selection == 0x200) || (selection == 0x180) || (selection == 0x100) || (selection == 0x080) || (selection == 0x000)) // OFF
+		{
+			led = 0x0;
+		}
+
+		if(selection == 0x700) // Fan Speed 1 (CW)
+		{
+			led = 0x1;
+			enable = 1;
+			outval = position[val];
+			val --;
+		}
+
+		if(selection == 0x680) // Fan Speed 2 (CW)
+		{
+			led = 0x2;
+			enable = 2;
+			outval = position[val];
+			val --;
+		}
+
+		if(selection == 0x580) // Fan Speed 3 (CW)
+		{
+			led = 0x4;
+			enable = 3;
+			outval = position[val];
+			val --;
+		}
+
+		if(selection == 0x380) // Heat Extractor (CCW)
+		{
+			led = 0x8;
+			enable = 3;
+			outval = position[val];
+			val ++;
+		}
+
+		if(val > 7) {val = 0;}
+		if (val < 0) {val = 7;}
+
+		if(enable == 1) { for (int i = 0; i < 10000; i++); /* S/W Delay (~ .01 sec) */ } // Speed 1
+
+		if(enable == 2) { for (int i = 0; i < 5000; i++); /* S/W Delay (~ .005 sec) */ } // Speed 2
+
+		if(enable == 3) { for (int i = 0; i < 2500; i++); /* S/W Delay (~ .0025 sec) */ } // Speed 3
+
+		GPIOC_PDOR = outval;
+		GPIOD_PDOR = led;
+	}
+}

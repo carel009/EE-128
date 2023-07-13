@@ -1,0 +1,55 @@
+#include "fsl_device_registers.h"
+#include <stdint.h>
+void main(void) {
+	SIM_SCGC5 |= SIM_SCGC5_PORTC_MASK; // Enable Port C Clock Gate Control
+	PORTC_GPCLR = 0x01BF0100; // Configures Pins 0-5 and 7-8 on Port C to be GPIO
+	GPIOC_PDDR = 0x0000003F; // Configures Pins 0-5 on Port C to be Output and Pins 7-8 on Port C to be Input
+
+	unsigned char position[8] = {0x32, 0x36, 0x34, 0x35, 0x31, 0x39, 0x38, 0x3A};
+	uint32_t outval = 0;
+	int val = 0, enable = 0;
+	uint32_t selection = 0;
+
+	while (1)
+	{
+		//Read Port C
+		selection = GPIOC_PDIR & 0x180; // Captures and stores bit 7-8 on Port C
+
+		if(selection == 0x180) // CW slow
+		{
+			enable = 1;
+			outval = position[val];
+			val --;
+		}
+
+		if(selection == 0x100) // CW fast
+		{
+			enable = 2;
+			outval = position[val];
+			val --;
+		}
+
+		if(selection == 0x080) // CCW slow
+		{
+			enable = 1;
+			outval = position[val];
+			val ++;
+		}
+
+		if(selection == 0x000) // CCW fast
+		{
+			enable = 2;
+			outval = position[val];
+			val ++;
+		}
+
+		if(val > 7) {val = 0;}
+		if (val < 0) {val = 7;}
+
+		if(enable == 1) { for (int i = 0; i < 250000; i++); /* S/W Delay (~ .25 sec) */ } // slow output
+
+		if(enable == 2) { for (int i = 0; i < 10000; i++); /* S/W Delay (~ .01 sec) */ } // fast output
+
+		GPIOC_PDOR = outval;
+	}
+}
